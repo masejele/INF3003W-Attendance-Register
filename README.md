@@ -16,6 +16,8 @@ different dashboards and functionality.
 
 ### Student Features
 - Student login and authentication
+- Test Email: student@inf3003.local
+- Password: Student123!
 - Student dashboard
 - View student profile
 - View attendance records
@@ -25,6 +27,8 @@ different dashboards and functionality.
 
 ### Lecturer Features
 - Lecturer login and authentication
+- Test Email: lecturer@inf3003.local
+- Password: Lecturer123!
 - Lecturer dashboard
 - Create attendance sessions
 - View attendance sessions
