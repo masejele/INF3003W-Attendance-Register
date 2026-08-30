@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UCTAttendanceRegister")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4d00d6f407c8457c764f3d23a82b1d6ddcf76d46")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8dc1234ebdd0d337b662c2873d81ed2fc6fec664")]
 [assembly: System.Reflection.AssemblyProductAttribute("UCTAttendanceRegister")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UCTAttendanceRegister")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

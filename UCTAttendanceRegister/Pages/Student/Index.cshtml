@@ -7,67 +7,157 @@
     ViewData["Title"] = "Student Dashboard";
 }
 
-<h1>Student Dashboard</h1>
+<div class="page-intro">
+    <span class="eyebrow">Student access</span>
+    <h1 class="page-title student-title">Student Dashboard</h1>
+    <p>Welcome to the student dashboard.</p>
+</div>
 
-<p>Welcome to the student dashboard.</p>
-
-<div class="row">
-
-    <!-- My Attendance -->
+<div class="row g-4 mb-4 dashboard-tiles">
     <div class="col-md-4">
-        <div class="card">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Join Course</h5>
+                <p class="card-text">Select a course to join from the available list.</p>
+                <a href="/Student/JoinCourse" class="btn btn-primary">Join Course</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">My Attendance</h5>
-
-                <p class="card-text">
-                    View your attendance records.
-                </p>
-
-                <a href="/Student/Attendance" class="btn btn-primary">
-                    View My Attendance
-                </a>
+                <p class="card-text">View your attendance records.</p>
+                <a href="/Student/Attendance" class="btn btn-primary">View My Attendance</a>
             </div>
         </div>
     </div>
 
-
-    <!-- Mark Attendance -->
     <div class="col-md-4">
-        <div class="card">
+        <div class="card h-100">
             <div class="card-body">
-
                 <h5 class="card-title">Mark Attendance</h5>
+                <p class="card-text">Mark your attendance for a session.</p>
+                <a href="/Student/MarkAttendance" class="btn btn-primary">Mark Attendance</a>
+            </div>
+        </div>
+    </div>
+</div>
 
-                <p class="card-text">
-                    Mark your attendance for a session.
-                </p>
+<div class="glow-panel mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <h2 class="mb-0">MY COURSES</h2>
+    </div>
 
-                <a href="/Student/MarkAttendance" class="btn btn-primary">
-                    Mark Attendance
-                </a>
+    @if (!Model.EnrolledCourses.Any())
+    {
+        <p class="mb-0 text-muted">You have not joined any courses yet.</p>
+    }
+    else
+    {
+        <div class="row g-3">
+            @foreach (var course in Model.EnrolledCourses)
+            {
+                <div class="col-md-6 col-xl-4">
+                    <div class="bg-dark rounded p-3 border border-light-subtle h-100">
+                        <div class="fw-bold fs-5">@course.CourseCode</div>
+                        <div class="text-muted mb-2">@course.CourseName</div>
+                        <small class="text-uppercase text-muted">Enrollment code</small>
+                        <div class="fw-semibold">@course.EnrollmentCode</div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
 
+<div class="glow-panel mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <h2 class="mb-0">ATTENDANCE INSIGHTS & FORECAST</h2>
+        <span class="badge bg-primary-subtle text-light">@Model.OverallStatus</span>
+    </div>
+
+    <div class="row g-3 align-items-center mb-3">
+        <div class="col-md-4">
+            <p class="text-white mb-1">Overall Attendance</p>
+            <h3 class="mb-0 text-white">@Model.OverallAttendancePercentage.ToString("0.##")%</h3>
+        </div>
+        <div class="col-md-8">
+            <div class="progress" style="height: 18px;">
+                <div class="progress-bar bg-success" role="progressbar" style="width: @Model.OverallAttendancePercentage%"></div>
             </div>
         </div>
     </div>
 
-
-    <!-- My Profile -->
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-
-                <h5 class="card-title">My Profile</h5>
-
-                <p class="card-text">
-                    View your student profile.
-                </p>
-
-                <a href="/Student/Profile" class="btn btn-primary">
-                    View Profile
-                </a>
-
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="bg-dark rounded p-3 border border-light-subtle">
+                <small class="text-white-50">Sessions attended</small>
+                <div class="fw-bold fs-5 text-white">@Model.TotalSessionsAttended</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="bg-dark rounded p-3 border border-light-subtle">
+                <small class="text-white-50">Total sessions</small>
+                <div class="fw-bold fs-5 text-white">@Model.TotalSessionsHeld</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="bg-dark rounded p-3 border border-light-subtle">
+                <small class="text-white-50">Status</small>
+                <div class="fw-bold fs-5 text-white">@Model.OverallStatus</div>
             </div>
         </div>
     </div>
+</div>
 
+<div class="mb-4">
+    <h2 class="mb-3">Course Attendance</h2>
+
+    @if (!Model.CourseInsights.Any())
+    {
+        <div class="glow-panel">
+            <p class="mb-0">No course attendance data is available yet.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var course in Model.CourseInsights)
+            {
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
+                                <div>
+                                    <h4 class="card-title mb-1 text-white">@course.CourseCode</h4>
+                                    <p class="text-white-50 mb-0">@course.CourseName</p>
+                                </div>
+                                <span class="badge bg-primary-subtle text-light">@course.Status</span>
+                            </div>
+
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <strong class="text-white">@course.AttendancePercentage.ToString("0.##")%</strong>
+                                <small class="text-white-50">@course.SessionsAttended / @course.TotalSessionsHeld sessions</small>
+                            </div>
+
+                            <div class="progress mb-3" style="height: 16px;">
+                                <div class="progress-bar @(course.AttendancePercentage >= 75 ? "bg-success" : course.AttendancePercentage >= 60 ? "bg-warning" : "bg-danger")" role="progressbar" style="width: @course.AttendancePercentage%"></div>
+                            </div>
+
+                            <p class="mb-2 text-white">
+                                <strong class="text-white">@course.SessionsAttended</strong> / <strong class="text-white">@course.TotalSessionsHeld</strong> sessions attended
+                            </p>
+
+                            <div class="border-top border-light-subtle pt-3 mt-3">
+                                <h6 class="mb-2 text-white">Attendance Forecast</h6>
+                                <p class="mb-0 text-white-50">@course.Forecast.Message</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 </div>

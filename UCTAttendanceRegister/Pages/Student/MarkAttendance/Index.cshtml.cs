@@ -28,9 +28,21 @@ public class IndexModel : PageModel
 
     public async Task OnGetAsync()
     {
+        var student = await _userManager.GetUserAsync(User);
+
+        if (student == null)
+        {
+            return;
+        }
+
+        var enrolledCourseIds = await _context.StudentCourses
+            .Where(sc => sc.StudentId == student.Id)
+            .Select(sc => sc.CourseId)
+            .ToListAsync();
+
         Sessions = (await _context.AttendanceSessions
             .Include(s => s.Course)
-            .Where(s => s.IsOpen)
+            .Where(s => s.IsOpen && enrolledCourseIds.Contains(s.CourseId))
             .ToListAsync())
             .OrderBy(s => s.SessionDate)
             .ThenBy(s => s.StartTime)
@@ -55,6 +67,15 @@ public class IndexModel : PageModel
         if (session == null)
         {
             return NotFound();
+        }
+
+        var isEnrolled = await _context.StudentCourses
+            .AnyAsync(sc => sc.StudentId == student.Id && sc.CourseId == session.CourseId);
+
+        if (!isEnrolled)
+        {
+            TempData["Error"] = "You must join this course before marking attendance.";
+            return RedirectToPage();
         }
 
 

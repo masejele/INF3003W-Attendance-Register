@@ -7,5 +7,7 @@ namespace UCTAttendanceRegister.Models
         public string FullName { get; set; } = string.Empty;
 
         public string? StudentNumber { get; set; }
+
+        public ICollection<StudentCourse> Enrollments { get; set; } = new List<StudentCourse>();
     }
 }

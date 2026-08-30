@@ -27,7 +27,7 @@ public static class SeedData
         }
 
         // Create default lecturer account
-        var lecturerEmail = "lecturer@inf3003.local";
+        var lecturerEmail = "lecturer@test.local";
 
         var lecturer =
             await userManager.FindByEmailAsync(lecturerEmail);
@@ -39,7 +39,7 @@ public static class SeedData
                 UserName = lecturerEmail,
                 Email = lecturerEmail,
                 EmailConfirmed = true,
-                FullName = "INF3003 Lecturer"
+                FullName = "Walter White"
             };
 
             var result = await userManager.CreateAsync(
@@ -57,7 +57,7 @@ public static class SeedData
         }
 
         // Create default student account
-        var studentEmail = "student@inf3003.local";
+        var studentEmail = "student@test.local";
 
         var student = await userManager.FindByEmailAsync(studentEmail);
 
@@ -68,7 +68,7 @@ public static class SeedData
                 UserName = studentEmail,
                 Email = studentEmail,
                 EmailConfirmed = true,
-                FullName = "INF3003 Student",
+                FullName = "Masechaba Jele",
                 StudentNumber = "JLXMAS002"
             };
 

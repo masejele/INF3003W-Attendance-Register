@@ -5,20 +5,53 @@
     ViewData["Title"] = "View Attendance";
 }
 
-<h1>View Attendance</h1>
-
-<p>View student attendance records here.</p>
-
-<div class="card">
-    <div class="card-body">
-        <h3>Student Attendance</h3>
-
-        <p>
-            Attendance records for students will be displayed here.
-        </p>
-
-        <a asp-page="/Lecturer/Index" class="btn btn-primary">
-            Back to Dashboard
-        </a>
-    </div>
+<div class="page-intro">
+    <span class="eyebrow">Records</span>
+    <h1 class="page-title lecturer-title">View Attendance</h1>
+    <p>Review student attendance records for all courses you teach.</p>
 </div>
+
+<div class="page-actions">
+    <a asp-page="/Lecturer/Index" class="btn btn-primary">
+        Back to Dashboard
+    </a>
+</div>
+
+@if (!Model.AttendanceRows.Any())
+{
+    <div class="glow-panel">
+        <p class="mb-0">No student attendance records are available yet for your courses.</p>
+    </div>
+}
+else
+{
+    <div class="table-shell">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Student Number</th>
+                    <th>Course</th>
+                    <th>Session Date</th>
+                    <th>Time</th>
+                    <th>Marked At</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model.AttendanceRows)
+                {
+                    <tr>
+                        <td>@row.StudentName</td>
+                        <td>@row.StudentNumber</td>
+                        <td>@row.CourseCode - @row.CourseName</td>
+                        <td>@row.SessionDate.ToString("dd/MM/yyyy")</td>
+                        <td>@row.StartTime.ToString(@"hh\:mm") - @row.EndTime.ToString(@"hh\:mm")</td>
+                        <td>@row.MarkedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td><span class="badge bg-success">@row.Status</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

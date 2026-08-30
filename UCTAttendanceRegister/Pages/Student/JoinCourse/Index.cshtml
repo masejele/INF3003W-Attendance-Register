@@ -1,0 +1,67 @@
+@page
+@model UCTAttendanceRegister.Pages.Student.JoinCourse.IndexModel
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Student")]
+
+@{
+    ViewData["Title"] = "Join Course";
+}
+
+<div class="page-intro">
+    <span class="eyebrow">Enrollment</span>
+    <h1 class="page-title student-title">Join a Course</h1>
+    <p>Use a course enrollment code to join a class.</p>
+</div>
+
+<div class="page-actions">
+    <a href="/Student/Index" class="btn btn-primary">
+        Back to Dashboard
+    </a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card glow-panel">
+            <div class="card-body">
+                <form method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    @if (Model.AvailableCourses.Count == 0)
+                    {
+                        <div class="alert alert-info">
+                            There are no available courses to join right now.
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-group mb-3">
+                            <label asp-for="CourseId" class="form-label">Available Courses</label>
+                            <select asp-for="CourseId"
+                                    asp-items="Model.AvailableCourses"
+                                    class="form-select">
+                                <option value="">-- Select a course --</option>
+                            </select>
+                            <span asp-validation-for="CourseId" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Join Course</button>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

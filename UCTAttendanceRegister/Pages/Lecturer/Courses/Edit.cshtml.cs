@@ -55,8 +55,26 @@ public class EditModel : PageModel
             return NotFound();
         }
 
+        Course.EnrollmentCode = Course.EnrollmentCode.Trim();
+
+        if (string.IsNullOrWhiteSpace(Course.EnrollmentCode))
+        {
+            ModelState.AddModelError(nameof(Course.EnrollmentCode), "Enrollment code is required.");
+            return Page();
+        }
+
+        var duplicateCode = await _context.Courses
+            .AnyAsync(c => c.Id != Course.Id && c.EnrollmentCode == Course.EnrollmentCode);
+
+        if (duplicateCode)
+        {
+            ModelState.AddModelError(nameof(Course.EnrollmentCode), "That enrollment code is already in use.");
+            return Page();
+        }
+
         existingCourse.CourseCode = Course.CourseCode;
         existingCourse.CourseName = Course.CourseName;
+        existingCourse.EnrollmentCode = Course.EnrollmentCode.ToUpperInvariant();
 
         await _context.SaveChangesAsync();
 

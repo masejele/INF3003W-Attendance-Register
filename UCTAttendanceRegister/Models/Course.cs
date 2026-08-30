@@ -14,8 +14,15 @@ public class Course
     [Display(Name = "Course Name")]
     public string CourseName { get; set; } = string.Empty;
 
+    [Required]
+    [StringLength(12)]
+    [Display(Name = "Enrollment Code")]
+    public string EnrollmentCode { get; set; } = string.Empty;
+
     // Lecturer responsible for this course
     public string? LecturerId { get; set; }
 
     public ApplicationUser? Lecturer { get; set; }
+
+    public ICollection<StudentCourse> StudentCourses { get; set; } = new List<StudentCourse>();
 }

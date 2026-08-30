@@ -33,10 +33,17 @@ public class IndexModel : PageModel
             return;
         }
 
+        var enrolledCourseIds = await _context.StudentCourses
+            .Where(sc => sc.StudentId == student.Id)
+            .Select(sc => sc.CourseId)
+            .ToListAsync();
+
         AttendanceRecords = await _context.AttendanceRecords
             .Include(r => r.AttendanceSession)
             .ThenInclude(s => s.Course)
-            .Where(r => r.StudentId == student.Id)
+            .Where(r => r.StudentId == student.Id &&
+                r.AttendanceSession != null &&
+                enrolledCourseIds.Contains(r.AttendanceSession.CourseId))
             .OrderByDescending(r => r.MarkedAt)
             .ToListAsync();
     }

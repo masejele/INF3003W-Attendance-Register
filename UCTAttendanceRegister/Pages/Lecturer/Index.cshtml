@@ -4,79 +4,137 @@
     ViewData["Title"] = "Lecturer Dashboard";
 }
 
-<h1>Lecturer Dashboard</h1>
+<div class="page-intro">
+    <span class="eyebrow">Academic overview</span>
+    <h1 class="page-title lecturer-title">Lecturer Dashboard</h1>
+    <p>Welcome to the lecturer dashboard.</p>
+</div>
 
-<p>Welcome to the lecturer dashboard.</p>
-
-<div class="row">
-
-    <!-- Courses -->
-    <div class="col-md-4 mb-4">
+<div class="row g-4 mb-4 dashboard-tiles">
+    <div class="col-md-4">
         <div class="card h-100">
             <div class="card-body">
                 <h3 class="card-title">Courses</h3>
-
-                <p class="card-text">
-                    View and manage your courses.
-                </p>
-
-                <a asp-page="/Lecturer/Courses/Index"
-                class="btn btn-primary">
-                    View Courses
-                </a>
+                <p class="card-text">View and manage your courses.</p>
+                <a asp-page="/Lecturer/Courses/Index" class="btn btn-primary">View Courses</a>
             </div>
         </div>
     </div>
 
-    <!-- Manage Attendance -->
-    <div class="col-md-4 mb-4">
+    <div class="col-md-4">
         <div class="card h-100">
             <div class="card-body">
                 <h3 class="card-title">Manage Attendance</h3>
-                <p class="card-text">
-                    Create and manage attendance sessions.
-                </p>
-
-                <a asp-page="/Lecturer/AttendanceSessions/Index"
-                   class="btn btn-primary">
-                    Manage Attendance
-                </a>
+                <p class="card-text">Create and manage attendance sessions.</p>
+                <a asp-page="/Lecturer/AttendanceSessions/Index" class="btn btn-primary">Manage Attendance</a>
             </div>
         </div>
     </div>
 
-    <!-- View Attendance -->
-    <div class="col-md-4 mb-4">
+    <div class="col-md-4">
         <div class="card h-100">
             <div class="card-body">
                 <h3 class="card-title">View Attendance</h3>
-                <p class="card-text">
-                    View student attendance records.
-                </p>
-
-                <a asp-page="/Lecturer/Attendance/Index"
-                   class="btn btn-primary">
-                    View Attendance
-                </a>
+                <p class="card-text">View student attendance records.</p>
+                <a asp-page="/Lecturer/Attendance/Index" class="btn btn-primary">View Attendance</a>
             </div>
         </div>
     </div>
 
-    <!-- Reports -->
-    <div class="col-md-4 mb-4">
+    <div class="col-md-4">
         <div class="card h-100">
             <div class="card-body">
                 <h3 class="card-title">Reports</h3>
-                <p class="card-text">
-                    View attendance reports.
-                </p>
-
-                <a asp-page="/Lecturer/Reports/Index"
-                   class="btn btn-primary">
-                    View Reports
-                </a>
+                <p class="card-text">View attendance reports.</p>
+                <a asp-page="/Lecturer/Reports/Index" class="btn btn-primary">View Reports</a>
             </div>
         </div>
     </div>
+</div>
 
+<div class="mb-4">
+    <h2 class="mb-3">ATTENDANCE INSIGHTS & FORECAST</h2>
+
+    @if (!Model.CourseSummaries.Any())
+    {
+        <div class="glow-panel">
+            <p class="mb-0">No course attendance data is available yet.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var course in Model.CourseSummaries)
+            {
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
+                                <div>
+                                    <h3 class="card-title mb-1">@course.CourseCode</h3>
+                                    <p class="text-muted mb-0">@course.CourseName</p>
+                                </div>
+                                <span class="badge bg-primary-subtle text-light">@course.StudentCount Students</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-muted">Average Attendance</span>
+                                <strong>@course.AverageAttendancePercentage.ToString("0.##")%</strong>
+                            </div>
+
+                            <div class="progress mb-3" style="height: 16px;">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: @course.AverageAttendancePercentage%"></div>
+                            </div>
+
+                            <div class="row g-2 text-center mb-3">
+                                <div class="col-4">
+                                    <div class="bg-dark rounded p-2 border border-light-subtle">
+                                        <div class="fw-bold text-success">@course.GoodStandingCount</div>
+                                        <small class="text-muted">Good Standing</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="bg-dark rounded p-2 border border-light-subtle">
+                                        <div class="fw-bold text-warning">@course.NeedsAttentionCount</div>
+                                        <small class="text-muted">Needs Attention</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="bg-dark rounded p-2 border border-light-subtle">
+                                        <div class="fw-bold text-danger">@course.AtRiskCount</div>
+                                        <small class="text-muted">At Risk</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (course.StudentsBelowTarget.Any())
+                            {
+                                <div class="table-shell mt-3">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Student</th>
+                                                <th>Attendance %</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var student in course.StudentsBelowTarget)
+                                            {
+                                                <tr>
+                                                    <td>@student.StudentName</td>
+                                                    <td>@student.AttendancePercentage.ToString("0.##")%</td>
+                                                    <td><span class="badge @(student.Status == "Needs Attention" ? "bg-warning text-dark" : "bg-danger")">@student.Status</span></td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 </div>

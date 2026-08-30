@@ -38,6 +38,18 @@
                       class="text-danger"></span>
             </div>
 
+            <div class="form-group mb-3">
+                <label asp-for="Course.EnrollmentCode"
+                       class="control-label"></label>
+
+                <input asp-for="Course.EnrollmentCode"
+                       class="form-control"
+                       placeholder="e.g. INF3003A" />
+
+                <span asp-validation-for="Course.EnrollmentCode"
+                      class="text-danger"></span>
+            </div>
+
             <button type="submit"
                     class="btn btn-primary">
                 Create Course

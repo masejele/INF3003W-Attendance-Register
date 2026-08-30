@@ -5,20 +5,73 @@
     ViewData["Title"] = "Attendance Reports";
 }
 
-<h1>Attendance Reports</h1>
+<div class="page-intro">
+    <span class="eyebrow">Analytics</span>
+    <h1 class="page-title lecturer-title">Attendance Reports</h1>
+    <p>Simple system overview and reporting for your courses.</p>
+</div>
 
-<p>View attendance reports here.</p>
+<div class="page-actions">
+    <a asp-page="/Lecturer/Index" class="btn btn-primary">
+        Back to Dashboard
+    </a>
+</div>
 
-<div class="card">
-    <div class="card-body">
-        <h3>Attendance Reports</h3>
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Courses</h5>
+                <p class="card-text">@Model.TotalCourses courses managed</p>
+            </div>
+        </div>
+    </div>
 
-        <p>
-            Attendance reports will be displayed here.
-        </p>
+    <div class="col-md-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Enrollments</h5>
+                <p class="card-text">@Model.TotalStudentsEnrolled student enrollments</p>
+            </div>
+        </div>
+    </div>
 
-        <a asp-page="/Lecturer/Index" class="btn btn-primary">
-            Back to Dashboard
-        </a>
+    <div class="col-md-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Open Sessions</h5>
+                <p class="card-text">@Model.OpenSessions active sessions</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Avg Attendance</h5>
+                <p class="card-text">@Model.AverageAttendanceAcrossCourses.ToString("0.##")%</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="glow-panel mb-4">
+    <h3 class="mb-3">System snapshot</h3>
+    <p class="mb-0">You currently have <strong>@Model.StudentsAtRisk</strong> students flagged as at risk across your managed courses, based on the current attendance percentages.</p>
+</div>
+
+<div class="glow-panel">
+    <h3 class="mb-3">Important system features</h3>
+
+    <div class="row g-3">
+        @foreach (var feature in Model.Features)
+        {
+            <div class="col-md-6">
+                <div class="bg-dark rounded p-3 border border-light-subtle h-100">
+                    <h5 class="mb-2">@feature.Title</h5>
+                    <p class="mb-0 text-muted">@feature.Description</p>
+                </div>
+            </div>
+        }
     </div>
 </div>
