@@ -1,0 +1,73 @@
+@page
+@model UCTAttendanceRegister.Pages.Student.IndexModel
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Student")]
+
+@{
+    ViewData["Title"] = "Student Dashboard";
+}
+
+<h1>Student Dashboard</h1>
+
+<p>Welcome to the student dashboard.</p>
+
+<div class="row">
+
+    <!-- My Attendance -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">My Attendance</h5>
+
+                <p class="card-text">
+                    View your attendance records.
+                </p>
+
+                <a href="/Student/Attendance" class="btn btn-primary">
+                    View My Attendance
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Mark Attendance -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+
+                <h5 class="card-title">Mark Attendance</h5>
+
+                <p class="card-text">
+                    Mark your attendance for a session.
+                </p>
+
+                <a href="/Student/MarkAttendance" class="btn btn-primary">
+                    Mark Attendance
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- My Profile -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+
+                <h5 class="card-title">My Profile</h5>
+
+                <p class="card-text">
+                    View your student profile.
+                </p>
+
+                <a href="/Student/Profile" class="btn btn-primary">
+                    View Profile
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+</div>

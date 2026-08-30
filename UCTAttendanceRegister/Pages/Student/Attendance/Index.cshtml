@@ -1,0 +1,73 @@
+@page
+@model UCTAttendanceRegister.Pages.Student.Attendance.IndexModel
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Student")]
+
+@{
+    ViewData["Title"] = "My Attendance";
+}
+
+<h1>My Attendance</h1>
+
+<p>Here you can view your attendance records.</p>
+
+@if (Model.AttendanceRecords.Count == 0)
+{
+    <div class="alert alert-info">
+        You have not marked attendance for any sessions yet.
+    </div>
+}
+else
+{
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Marked At</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var record in Model.AttendanceRecords)
+            {
+                <tr>
+                    <td>
+                        @record.AttendanceSession?.Course?.CourseCode
+                    </td>
+
+                    <td>
+                        @record.AttendanceSession?.SessionDate.ToString("dd/MM/yyyy")
+                    </td>
+
+                    <td>
+                        @record.AttendanceSession?.StartTime.ToString(@"hh\:mm")
+                    </td>
+
+                    <td>
+                        @record.AttendanceSession?.EndTime.ToString(@"hh\:mm")
+                    </td>
+
+                    <td>
+                        @record.MarkedAt.ToString("dd/MM/yyyy HH:mm")
+                    </td>
+
+                    <td>
+                        <span class="badge bg-success">
+                            Present
+                        </span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+    <a href="/Student/Index" class="btn btn-primary">
+        Back to Dashboard
+    </a>
+}

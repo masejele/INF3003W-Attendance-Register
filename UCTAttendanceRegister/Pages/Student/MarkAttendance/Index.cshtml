@@ -1,0 +1,125 @@
+@page
+@model UCTAttendanceRegister.Pages.Student.MarkAttendance.IndexModel
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Student")]
+
+@{
+    ViewData["Title"] = "Mark Attendance";
+}
+
+<h1>Mark Attendance</h1>
+
+<p>Select an open attendance session to mark your attendance.</p>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+@if (Model.Sessions.Count == 0)
+{
+    <div class="alert alert-info">
+        There are currently no open attendance sessions.
+    </div>
+}
+else
+{
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var session in Model.Sessions)
+            {
+                <tr>
+
+                    <td>
+                        @session.Course?.CourseCode
+                    </td>
+
+                    <td>
+                        @session.SessionDate.ToString("dd/MM/yyyy")
+                    </td>
+
+                    <td>
+                        @session.StartTime.ToString(@"hh\:mm")
+                    </td>
+
+                    <td>
+                        @session.EndTime.ToString(@"hh\:mm")
+                    </td>
+
+                    <td>
+
+                        @if (session.IsOpen)
+                        {
+                            <span class="badge bg-success">
+                                Open
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">
+                                Closed
+                            </span>
+                        }
+
+                    </td>
+
+                    <td>
+
+                        @if (session.IsOpen)
+                        {
+                            <form method="post">
+
+                                <input type="hidden"
+                                       name="SessionId"
+                                       value="@session.Id" />
+
+                                <button type="submit"
+                                        class="btn btn-primary">
+                                    Mark Attendance
+                                </button>
+
+                            </form>
+                        }
+                        else
+                        {
+                            <button class="btn btn-secondary"
+                                    disabled>
+                                Closed
+                            </button>
+                        }
+
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+    
+    <a href="/Student/Index" class="btn btn-primary">
+        Back to Dashboard
+    </a>
+}

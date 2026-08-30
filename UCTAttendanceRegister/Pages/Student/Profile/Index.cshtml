@@ -1,0 +1,35 @@
+@page
+@model UCTAttendanceRegister.Pages.Student.Profile.IndexModel
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Student")]
+
+<h1>My Profile</h1>
+
+<div class="card" style="max-width: 750px;">
+    <div class="card-body">
+
+        <h2>Student Information</h2>
+
+        <hr />
+
+        <p>
+            <strong>Name:</strong>
+            @Model.CurrentUser?.UserName
+        </p>
+
+        <p>
+            <strong>Email:</strong>
+            @Model.CurrentUser?.Email
+        </p>
+
+        <p>
+            <strong>Student Number:</strong>
+            @Model.CurrentUser?.StudentNumber
+        </p>
+
+        <a href="/Student/Index" class="btn btn-primary">
+            Back to Dashboard
+        </a>
+
+    </div>
+</div>

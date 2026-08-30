@@ -1,0 +1,92 @@
+@page
+@model UCTAttendanceRegister.Pages.Lecturer.AttendanceSessions.IndexModel
+
+@{
+    ViewData["Title"] = "Attendance Sessions";
+}
+
+<h1>Attendance Sessions</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">
+        Create New Session
+    </a>
+</p>
+
+@if (Model.AttendanceSessions.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var session in Model.AttendanceSessions)
+            {
+                <tr>
+                    <td>
+                        @session.Course?.CourseCode
+                    </td>
+
+                    <td>
+                        @session.SessionDate.ToString("dd/MM/yyyy")
+                    </td>
+
+                    <td>
+                        @session.StartTime.ToString(@"hh\:mm")
+                    </td>
+
+                    <td>
+                        @session.EndTime.ToString(@"hh\:mm")
+                    </td>
+
+                    <td>
+                        @if (session.IsOpen)
+                        {
+                            <span class="badge bg-success">
+                                Open
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">
+                                Closed
+                            </span>
+                        }
+                    </td>
+
+                    <td>
+                        <a asp-page="./Edit"
+                           asp-route-id="@session.Id"
+                           class="btn btn-sm btn-secondary">
+                            Edit
+                        </a>
+
+                        <form method="post" asp-page-handler="Delete" style="display:inline;">
+                            <input type="hidden" name="id" value="@session.Id" />
+
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a href="/Lecturer/Index" class="btn btn-primary">
+        Back to Dashboard
+    </a>
+}
+else
+{
+    <p>No attendance sessions have been created yet.</p>
+}

@@ -1,0 +1,64 @@
+@page
+@model UCTAttendanceRegister.Pages.Lecturer.IndexModel
+@{
+    ViewData["Title"] = "Lecturer Dashboard";
+}
+
+<h1>Lecturer Dashboard</h1>
+
+<p>Welcome to the lecturer dashboard.</p>
+
+<div class="row">
+
+    <!-- Manage Attendance -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h3 class="card-title">Manage Attendance</h3>
+                <p class="card-text">
+                    Create and manage attendance sessions.
+                </p>
+
+                <a asp-page="/Lecturer/AttendanceSessions/Index"
+                   class="btn btn-primary">
+                    Manage Attendance
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Attendance -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h3 class="card-title">View Attendance</h3>
+                <p class="card-text">
+                    View student attendance records.
+                </p>
+
+                <a asp-page="/Lecturer/Attendance/Index"
+                   class="btn btn-primary">
+                    View Attendance
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reports -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h3 class="card-title">Reports</h3>
+                <p class="card-text">
+                    View attendance reports.
+                </p>
+
+                <a asp-page="/Lecturer/Reports/Index"
+                   class="btn btn-primary">
+                    View Reports
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>

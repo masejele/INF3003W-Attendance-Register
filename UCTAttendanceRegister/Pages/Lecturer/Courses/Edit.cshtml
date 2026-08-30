@@ -1,0 +1,57 @@
+@page
+@model UCTAttendanceRegister.Pages.Lecturer.Courses.EditModel
+
+@{
+    ViewData["Title"] = "Edit Course";
+}
+
+<h1>Edit Course</h1>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger"></div>
+
+            <input type="hidden" asp-for="Course.Id" />
+
+            <input type="hidden" asp-for="Course.LecturerId" />
+
+            <div class="form-group mb-3">
+                <label asp-for="Course.CourseCode"
+                       class="control-label"></label>
+
+                <input asp-for="Course.CourseCode"
+                       class="form-control" />
+
+                <span asp-validation-for="Course.CourseCode"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Course.CourseName"
+                       class="control-label"></label>
+
+                <input asp-for="Course.CourseName"
+                       class="form-control" />
+
+                <span asp-validation-for="Course.CourseName"
+                      class="text-danger"></span>
+            </div>
+
+            <button type="submit"
+                    class="btn btn-primary">
+                Save Changes
+            </button>
+
+            <a asp-page="Index"
+               class="btn btn-secondary">
+                Back to Courses
+            </a>
+
+        </form>
+    </div>
+</div>

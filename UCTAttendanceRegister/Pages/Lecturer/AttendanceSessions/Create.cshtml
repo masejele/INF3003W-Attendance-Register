@@ -1,0 +1,103 @@
+@page
+@model UCTAttendanceRegister.Pages.Lecturer.AttendanceSessions.CreateModel
+
+@{
+    ViewData["Title"] = "Create Attendance Session";
+}
+
+<h1>Create Attendance Session</h1>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+
+        <form method="post">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="AttendanceSession.CourseId"
+                       class="form-label">
+                    Course
+                </label>
+
+                <select asp-for="AttendanceSession.CourseId"
+                        asp-items="Model.CourseList"
+                        class="form-select">
+
+                    <option value="">
+                        -- Select Course --
+                    </option>
+
+                </select>
+
+                <span asp-validation-for="AttendanceSession.CourseId"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="AttendanceSession.SessionDate"
+                       class="form-label">
+                    Session Date
+                </label>
+
+                <input asp-for="AttendanceSession.SessionDate"
+                       type="date"
+                       class="form-control" />
+
+                <span asp-validation-for="AttendanceSession.SessionDate"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="AttendanceSession.StartTime"
+                       class="form-label">
+                    Start Time
+                </label>
+
+                <input asp-for="AttendanceSession.StartTime"
+                       type="time"
+                       class="form-control" />
+
+                <span asp-validation-for="AttendanceSession.StartTime"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="AttendanceSession.EndTime"
+                       class="form-label">
+                    End Time
+                </label>
+
+                <input asp-for="AttendanceSession.EndTime"
+                       type="time"
+                       class="form-control" />
+
+                <span asp-validation-for="AttendanceSession.EndTime"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <button type="submit"
+                    class="btn btn-primary">
+                Create Session
+            </button>
+
+            <a asp-page="./Index"
+               class="btn btn-secondary">
+                Cancel
+            </a>
+
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
