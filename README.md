@@ -1,42 +1,41 @@
 Masechaba Jele
 JLXMAS002
 
-# INF3003W Attendance Register
+# UCT Attendance Register
 
-## About the App
+A Razor Pages attendance management system for INF3003W, with separate Student and Lecturer roles.
+## Features
 
-The UCT Attendance Register is a web-based attendance management system designed for students and lecturers. It allows lecturers to manage courses and attendance sessions, while students can enrol in courses and manage their own attendance.
+### Student
+Log in and view their profile.
+View previous INF3003W attendance.
+View historical attendance imported from the CSV.
+Mark attendance when an INF3003W session is open.
 
-## Lecturer Flow
+### Lecturer
+Create and manage INF3003W attendance sessions.
+Import historical attendance from the CSV.
+View attendance for each lecture/session.
+Edit attendance records.
+View attendance statistics and an attendance graph.
+Select different lectures using a dropdown to update the attendance overview.
 
-1. Log in using a lecturer account.
-2. Access the Lecturer Dashboard.
-3. Create and manage courses.
-4. Provide students with a course enrolment code.
-5. View enrolled students.
-6. Create attendance sessions for courses.
-7. View and manage attendance records.
-8. Access attendance reports and insights.
+## Demo Logins
+### Student
+Email: student@test.local
+Password: Student123!
+Name: Student Name 001
+Student Number: STDNUM001
+Role: Student
+Course: INF3003W
 
-## Student Flow
+This account represents Student 001 from the imported CSV, so their information and historical attendance correspond to STDNUM001.
 
-1. Log in using a student account.
-2. Access the Student Dashboard.
-3. Join a course using the lecturer's enrolment code.
-4. View enrolled courses.
-5. Mark attendance for available sessions.
-6. View personal attendance records.
-7. View attendance insights and forecasts.
-8. Access their student profile.
+### Lecturer
+Email: lecturer@test.local
+Password: Lecturer123!
+Role: Lecturer
 
-## Key Features
-
-- Role-based student and lecturer accounts
-- Course creation and enrolment
-- Attendance session management
-- Student attendance marking
-- Attendance records and reports
-- Attendance insights and forecasting
-- Secure access based on user roles
-- Simple dashboard-based navigation
-- Modernised and responsive interface
+## Course
+The application uses one fixed course: INF3003W
+Historical attendance is imported from the INF3003W attendance CSV.
