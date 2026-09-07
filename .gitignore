@@ -1,0 +1,12 @@
+# Build output
+**/bin/
+**/obj/
+
+# Local SQLite databases
+*.db
+*.db-shm
+*.db-wal
+
+# Keep the sample attendance CSV available for marker testing
+!UCTAttendanceRegister/Data/Imports/
+!UCTAttendanceRegister/Data/Imports/INF3003_2026_AttendanceList.csv

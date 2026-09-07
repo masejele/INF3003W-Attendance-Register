@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using UCTAttendanceRegister.Data;
 using UCTAttendanceRegister.Models;
+using UCTAttendanceRegister.Services;
 
 namespace UCTAttendanceRegister.Pages.Lecturer.AttendanceSessions
 {
@@ -12,14 +13,14 @@ namespace UCTAttendanceRegister.Pages.Lecturer.AttendanceSessions
     public class EditModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly Inf3003wCourseService _courseService;
 
         public EditModel(
             ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager)
+            Inf3003wCourseService courseService)
         {
             _context = context;
-            _userManager = userManager;
+            _courseService = courseService;
         }
 
         [BindProperty]
@@ -27,13 +28,13 @@ namespace UCTAttendanceRegister.Pages.Lecturer.AttendanceSessions
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            var lecturerId = _userManager.GetUserId(User);
+            var course = await _courseService.GetAsync();
 
             var session = await _context.AttendanceSessions
                 .Include(a => a.Course)
                 .FirstOrDefaultAsync(a =>
                     a.Id == id &&
-                    a.Course!.LecturerId == lecturerId);
+                    course != null && a.CourseId == course.Id);
 
             if (session == null)
             {
@@ -52,13 +53,13 @@ namespace UCTAttendanceRegister.Pages.Lecturer.AttendanceSessions
                 return Page();
             }
 
-            var lecturerId = _userManager.GetUserId(User);
+            var course = await _courseService.GetAsync();
 
             var session = await _context.AttendanceSessions
                 .Include(a => a.Course)
                 .FirstOrDefaultAsync(a =>
                     a.Id == id &&
-                    a.Course!.LecturerId == lecturerId);
+                    course != null && a.CourseId == course.Id);
 
             if (session == null)
             {

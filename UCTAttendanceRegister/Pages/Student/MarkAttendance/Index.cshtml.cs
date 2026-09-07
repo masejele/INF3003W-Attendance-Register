@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using UCTAttendanceRegister.Data;
 using UCTAttendanceRegister.Models;
+using UCTAttendanceRegister.Services;
 
 namespace UCTAttendanceRegister.Pages.Student.MarkAttendance;
 
@@ -13,13 +14,16 @@ public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly Inf3003wCourseService _courseService;
 
     public IndexModel(
         ApplicationDbContext context,
-        UserManager<ApplicationUser> userManager)
+        UserManager<ApplicationUser> userManager,
+        Inf3003wCourseService courseService)
     {
         _context = context;
         _userManager = userManager;
+        _courseService = courseService;
     }
 
     public IList<AttendanceSession> Sessions { get; set; }
@@ -35,14 +39,16 @@ public class IndexModel : PageModel
             return;
         }
 
-        var enrolledCourseIds = await _context.StudentCourses
-            .Where(sc => sc.StudentId == student.Id)
-            .Select(sc => sc.CourseId)
-            .ToListAsync();
+        var course = await _courseService.GetAsync();
+        if (course == null)
+        {
+            return;
+        }
 
         Sessions = (await _context.AttendanceSessions
             .Include(s => s.Course)
-            .Where(s => s.IsOpen && enrolledCourseIds.Contains(s.CourseId))
+            .Where(s => s.IsOpen && s.CourseId == course.Id &&
+                _context.StudentCourses.Any(sc => sc.StudentId == student.Id && sc.CourseId == course.Id))
             .ToListAsync())
             .OrderBy(s => s.SessionDate)
             .ThenBy(s => s.StartTime)
@@ -59,6 +65,12 @@ public class IndexModel : PageModel
             return Challenge();
         }
 
+        var course = await _courseService.GetAsync();
+        if (course == null)
+        {
+            return NotFound();
+        }
+
 
         var session = await _context.AttendanceSessions
             .FirstOrDefaultAsync(s => s.Id == SessionId);
@@ -69,8 +81,8 @@ public class IndexModel : PageModel
             return NotFound();
         }
 
-        var isEnrolled = await _context.StudentCourses
-            .AnyAsync(sc => sc.StudentId == student.Id && sc.CourseId == session.CourseId);
+        var isEnrolled = session.CourseId == course.Id && await _context.StudentCourses
+            .AnyAsync(sc => sc.StudentId == student.Id && sc.CourseId == course.Id);
 
         if (!isEnrolled)
         {

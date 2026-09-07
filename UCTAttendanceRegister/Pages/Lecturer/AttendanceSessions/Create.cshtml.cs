@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using UCTAttendanceRegister.Data;
 using UCTAttendanceRegister.Models;
+using UCTAttendanceRegister.Services;
 
 namespace UCTAttendanceRegister.Pages.Lecturer.AttendanceSessions
 {
@@ -13,42 +13,33 @@ namespace UCTAttendanceRegister.Pages.Lecturer.AttendanceSessions
     public class CreateModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly Inf3003wCourseService _courseService;
 
         public CreateModel(
             ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager)
+            Inf3003wCourseService courseService)
         {
             _context = context;
-            _userManager = userManager;
+            _courseService = courseService;
         }
 
         [BindProperty]
         public AttendanceSession AttendanceSession { get; set; } = new();
 
-        public SelectList? CourseList { get; set; }
-
         public async Task<IActionResult> OnGetAsync()
         {
-            await LoadCoursesAsync();
-
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var lecturerId = _userManager.GetUserId(User);
-
-            var course = await _context.Courses
-                .FirstOrDefaultAsync(c =>
-                    c.Id == AttendanceSession.CourseId &&
-                    c.LecturerId == lecturerId);
+            var course = await _courseService.GetAsync();
 
             if (course == null)
             {
                 ModelState.AddModelError(
-                    "AttendanceSession.CourseId",
-                    "Please select one of your courses.");
+                    string.Empty,
+                    "The INF3003W course could not be found.");
             }
 
             if (AttendanceSession.EndTime <= AttendanceSession.StartTime)
@@ -60,7 +51,6 @@ namespace UCTAttendanceRegister.Pages.Lecturer.AttendanceSessions
 
             if (!ModelState.IsValid)
             {
-                await LoadCoursesAsync();
                 return Page();
             }
 
@@ -72,21 +62,6 @@ namespace UCTAttendanceRegister.Pages.Lecturer.AttendanceSessions
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
-        }
-
-        private async Task LoadCoursesAsync()
-        {
-            var lecturerId = _userManager.GetUserId(User);
-
-            var courses = await _context.Courses
-                .Where(c => c.LecturerId == lecturerId)
-                .OrderBy(c => c.CourseCode)
-                .ToListAsync();
-
-            CourseList = new SelectList(
-                courses,
-                "Id",
-                "CourseCode");
         }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using UCTAttendanceRegister.Data;
 using UCTAttendanceRegister.Models;
+using UCTAttendanceRegister.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace UCTAttendanceRegister.Pages.Lecturer.AttendanceSessions
@@ -12,14 +13,14 @@ namespace UCTAttendanceRegister.Pages.Lecturer.AttendanceSessions
     public class IndexModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly Inf3003wCourseService _courseService;
 
         public IndexModel(
             ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager)
+            Inf3003wCourseService courseService)
         {
             _context = context;
-            _userManager = userManager;
+            _courseService = courseService;
         }
 
         public IList<AttendanceSession> AttendanceSessions { get; set; }
@@ -27,11 +28,11 @@ namespace UCTAttendanceRegister.Pages.Lecturer.AttendanceSessions
 
         public async Task OnGetAsync()
         {
-            var lecturerId = _userManager.GetUserId(User);
+            var course = await _courseService.GetAsync();
 
             AttendanceSessions = await _context.AttendanceSessions
                 .Include(a => a.Course)
-                .Where(a => a.Course!.LecturerId == lecturerId)
+                .Where(a => course != null && a.CourseId == course.Id)
                 .OrderByDescending(a => a.SessionDate)
                 .ToListAsync();
 
@@ -43,8 +44,10 @@ namespace UCTAttendanceRegister.Pages.Lecturer.AttendanceSessions
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
+            var course = await _courseService.GetAsync();
             var attendanceSession = await _context.AttendanceSessions
-                .FindAsync(id);
+                .FirstOrDefaultAsync(session => session.Id == id &&
+                    course != null && session.CourseId == course.Id);
 
             if (attendanceSession == null)
             {

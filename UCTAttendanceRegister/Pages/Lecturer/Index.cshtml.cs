@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using UCTAttendanceRegister.Data;
 using UCTAttendanceRegister.Models;
+using UCTAttendanceRegister.Services;
 
 namespace UCTAttendanceRegister.Pages.Lecturer;
 
@@ -11,14 +12,14 @@ namespace UCTAttendanceRegister.Pages.Lecturer;
 public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _context;
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly Inf3003wCourseService _courseService;
 
     public IndexModel(
         ApplicationDbContext context,
-        UserManager<ApplicationUser> userManager)
+        Inf3003wCourseService courseService)
     {
         _context = context;
-        _userManager = userManager;
+        _courseService = courseService;
     }
 
     public IList<CoursePerformanceSummary> CourseSummaries { get; set; }
@@ -26,12 +27,8 @@ public class IndexModel : PageModel
 
     public async Task OnGetAsync()
     {
-        var lecturerId = _userManager.GetUserId(User);
-
-        var courses = await _context.Courses
-            .Where(c => c.LecturerId == lecturerId)
-            .OrderBy(c => c.CourseCode)
-            .ToListAsync();
+        var fixedCourse = await _courseService.GetAsync();
+        var courses = fixedCourse == null ? new List<Course>() : new List<Course> { fixedCourse };
 
         var summaries = new List<CoursePerformanceSummary>();
 

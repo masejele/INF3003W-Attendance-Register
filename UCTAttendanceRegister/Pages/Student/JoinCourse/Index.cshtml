@@ -10,7 +10,7 @@
 <div class="page-intro">
     <span class="eyebrow">Enrollment</span>
     <h1 class="page-title student-title">Join a Course</h1>
-    <p>Use a course enrollment code to join a class.</p>
+    <p>Join the INF3003W class.</p>
 </div>
 
 <div class="page-actions">
@@ -40,26 +40,12 @@
                 <form method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                    @if (Model.AvailableCourses.Count == 0)
-                    {
-                        <div class="alert alert-info">
-                            There are no available courses to join right now.
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="form-group mb-3">
-                            <label asp-for="CourseId" class="form-label">Available Courses</label>
-                            <select asp-for="CourseId"
-                                    asp-items="Model.AvailableCourses"
-                                    class="form-select">
-                                <option value="">-- Select a course --</option>
-                            </select>
-                            <span asp-validation-for="CourseId" class="text-danger"></span>
-                        </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">Course</label>
+                        <p class="form-control-plaintext">INF3003W</p>
+                    </div>
 
-                        <button type="submit" class="btn btn-primary w-100">Join Course</button>
-                    }
+                    <button type="submit" class="btn btn-primary w-100">Join INF3003W</button>
                 </form>
             </div>
         </div>

@@ -14,16 +14,6 @@
     <div class="col-md-4">
         <div class="card h-100">
             <div class="card-body">
-                <h3 class="card-title">Courses</h3>
-                <p class="card-text">View and manage your courses.</p>
-                <a asp-page="/Lecturer/Courses/Index" class="btn btn-primary">View Courses</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card h-100">
-            <div class="card-body">
                 <h3 class="card-title">Manage Attendance</h3>
                 <p class="card-text">Create and manage attendance sessions.</p>
                 <a asp-page="/Lecturer/AttendanceSessions/Index" class="btn btn-primary">Manage Attendance</a>
@@ -37,6 +27,16 @@
                 <h3 class="card-title">View Attendance</h3>
                 <p class="card-text">View student attendance records.</p>
                 <a asp-page="/Lecturer/Attendance/Index" class="btn btn-primary">View Attendance</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h3 class="card-title">Import Attendance</h3>
+                <p class="card-text">Import historical attendance from a CSV file.</p>
+                <a asp-page="/Lecturer/AttendanceImport/Index" class="btn btn-primary">Import Attendance</a>
             </div>
         </div>
     </div>

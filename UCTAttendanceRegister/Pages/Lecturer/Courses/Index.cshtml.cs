@@ -1,36 +1,27 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using UCTAttendanceRegister.Data;
 using UCTAttendanceRegister.Models;
+using UCTAttendanceRegister.Services;
 
 namespace UCTAttendanceRegister.Pages.Lecturer.Courses;
 
 [Authorize(Roles = "Lecturer")]
 public class IndexModel : PageModel
 {
-    private readonly ApplicationDbContext _context;
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly Inf3003wCourseService _courseService;
 
-    public IndexModel(
-        ApplicationDbContext context,
-        UserManager<ApplicationUser> userManager)
+    public IndexModel(Inf3003wCourseService courseService)
     {
-        _context = context;
-        _userManager = userManager;
+        _courseService = courseService;
     }
 
     public IList<Course> Courses { get; set; } = new List<Course>();
 
     public async Task OnGetAsync()
     {
-        var lecturerId = _userManager.GetUserId(User);
-
-        Courses = await _context.Courses
-            .Include(c => c.Lecturer)
-            .Where(c => c.LecturerId == lecturerId)
-            .OrderBy(c => c.CourseCode)
-            .ToListAsync();
+        var course = await _courseService.GetAsync();
+        Courses = course == null
+            ? new List<Course>()
+            : new List<Course> { course };
     }
 }

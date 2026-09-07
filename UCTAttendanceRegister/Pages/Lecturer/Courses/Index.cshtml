@@ -16,10 +16,6 @@
     </a>
 </div>
 
-<div class="page-actions">
-    <a asp-page="Create" class="btn btn-primary">Create New Course</a>
-</div>
-
 @if (Model.Courses.Any())
 {
     <div class="table-shell">
@@ -29,7 +25,6 @@
                     <th>Course Code</th>
                     <th>Course Name</th>
                     <th>Enrollment Code</th>
-                    <th>Actions</th>
                 </tr>
             </thead>
 
@@ -40,19 +35,6 @@
                         <td>@course.CourseCode</td>
                         <td>@course.CourseName</td>
                         <td><code>@course.EnrollmentCode</code></td>
-                        <td>
-                            <a asp-page="Edit"
-                               asp-route-id="@course.Id"
-                               class="btn btn-sm btn-secondary">
-                                Edit
-                            </a>
-
-                            <a asp-page="Delete"
-                               asp-route-id="@course.Id"
-                               class="btn btn-sm btn-danger">
-                                Delete
-                            </a>
-                        </td>
                     </tr>
                 }
             </tbody>

@@ -7,62 +7,88 @@
 
 <div class="page-intro">
     <span class="eyebrow">Analytics</span>
-    <h1 class="page-title lecturer-title">Attendance Reports</h1>
-    <p>Simple system overview and reporting for your courses.</p>
+    <h1 class="page-title lecturer-title">INF3003W Attendance Reports</h1>
+    <p>Review attendance for an individual INF3003W lecture session.</p>
 </div>
 
 <div class="page-actions">
-    <a asp-page="/Lecturer/Index" class="btn btn-primary">
-        Back to Dashboard
-    </a>
+    <a asp-page="/Lecturer/Index" class="btn btn-primary">Back to Dashboard</a>
 </div>
 
+@if (Model.Sessions.Count == 0)
+{
+    <div class="glow-panel">
+        <p class="mb-0">No INF3003W attendance sessions have been created yet.</p>
+    </div>
+}
+else
+{
+    <form method="get" class="row g-3 align-items-end mb-4">
+        <div class="col-md-7">
+            <label for="sessionId" class="form-label">Attendance Session</label>
+            <select id="sessionId" name="sessionId" class="form-select" onchange="this.form.submit()">
+                @foreach (var session in Model.Sessions)
+                {
+                    <option value="@session.Id" selected="@(session.Id == Model.SelectedSession?.Id)">
+                        @session.SessionDate.ToString("dd MMMM yyyy") - @session.StartTime.ToString(@"hh\:mm") to @session.EndTime.ToString(@"hh\:mm")
+                    </option>
+                }
+            </select>
+        </div>
+    </form>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card h-100"><div class="card-body">
+                <h2 class="h6">Total Students</h2>
+                <p class="display-6 mb-0">@Model.TotalStudents</p>
+            </div></div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100"><div class="card-body">
+                <h2 class="h6">Present</h2>
+                <p class="display-6 text-success mb-0">@Model.PresentStudents</p>
+            </div></div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100"><div class="card-body">
+                <h2 class="h6">Absent</h2>
+                <p class="display-6 text-danger mb-0">@Model.AbsentStudents</p>
+            </div></div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100"><div class="card-body">
+                <h2 class="h6">Attendance Rate</h2>
+                <p class="display-6 mb-0">@Model.AttendanceRate.ToString("0.0")%</p>
+            </div></div>
+        </div>
+    </div>
+
+    <div class="glow-panel mb-4">
+        <h2 class="h4">Attendance Overview - @Model.SelectedSession?.SessionDate.ToString("dd MMMM yyyy")</h2>
+        <div style="height: min(55vw, 420px); position: relative;">
+            <canvas id="attendanceChart" aria-label="Present and absent attendance chart"></canvas>
+        </div>
+    </div>
+}
+
 <div class="row g-4 mb-4">
-    <div class="col-md-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">Courses</h5>
-                <p class="card-text">@Model.TotalCourses courses managed</p>
-            </div>
-        </div>
+    <div class="col-md-4">
+        <div class="card h-100"><div class="card-body">
+            <h3 class="card-title">INF3003W</h3>
+            <p class="card-text">@Model.TotalStudentsEnrolled student enrollments</p>
+        </div></div>
     </div>
-
-    <div class="col-md-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">Enrollments</h5>
-                <p class="card-text">@Model.TotalStudentsEnrolled student enrollments</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">Open Sessions</h5>
-                <p class="card-text">@Model.OpenSessions active sessions</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">Avg Attendance</h5>
-                <p class="card-text">@Model.AverageAttendanceAcrossCourses.ToString("0.##")%</p>
-            </div>
-        </div>
+    <div class="col-md-4">
+        <div class="card h-100"><div class="card-body">
+            <h3 class="card-title">Open Sessions</h3>
+            <p class="card-text">@Model.OpenSessions active sessions</p>
+        </div></div>
     </div>
 </div>
 
 <div class="glow-panel mb-4">
-    <h3 class="mb-3">System snapshot</h3>
-    <p class="mb-0">You currently have <strong>@Model.StudentsAtRisk</strong> students flagged as at risk across your managed courses, based on the current attendance percentages.</p>
-</div>
-
-<div class="glow-panel">
     <h3 class="mb-3">Important system features</h3>
-
     <div class="row g-3">
         @foreach (var feature in Model.Features)
         {
@@ -75,3 +101,36 @@
         }
     </div>
 </div>
+
+@section Scripts {
+    @if (Model.SelectedSession != null)
+    {
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+        <script>
+            const attendanceCanvas = document.getElementById('attendanceChart');
+            if (attendanceCanvas) {
+                new Chart(attendanceCanvas, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Present', 'Absent'],
+                        datasets: [{
+                            data: [@Model.PresentStudents, @Model.AbsentStudents],
+                            backgroundColor: ['#34d399', '#f87171'],
+                            borderColor: ['#07111f', '#07111f'],
+                            borderWidth: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: { color: '#f8fbff' }
+                            }
+                        }
+                    }
+                });
+            }
+        </script>
+    }
+}

@@ -7,8 +7,8 @@
 
 <div class="page-intro">
     <span class="eyebrow">Records</span>
-    <h1 class="page-title lecturer-title">View Attendance</h1>
-    <p>Review student attendance records for all courses you teach.</p>
+    <h1 class="page-title lecturer-title">INF3003W Attendance</h1>
+    <p>Review and update attendance for a selected INF3003W session.</p>
 </div>
 
 <div class="page-actions">
@@ -17,25 +17,74 @@
     </a>
 </div>
 
-@if (!Model.AttendanceRows.Any())
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success" role="alert">@TempData["Success"]</div>
+}
+
+@if (Model.Sessions.Count == 0)
 {
     <div class="glow-panel">
-        <p class="mb-0">No student attendance records are available yet for your courses.</p>
+        <p class="mb-0">No INF3003W attendance sessions have been created yet.</p>
     </div>
 }
 else
 {
+    <form method="get" class="row g-3 align-items-end mb-4">
+        <div class="col-md-7">
+            <label for="sessionId" class="form-label">Attendance Session</label>
+            <select id="sessionId" name="sessionId" class="form-select" onchange="this.form.submit()">
+                @foreach (var session in Model.Sessions)
+                {
+                    <option value="@session.Id" selected="@(session.Id == Model.SelectedSession?.Id)">
+                        @session.SessionDate.ToString("dd MMMM yyyy") - @session.StartTime.ToString(@"hh\:mm") to @session.EndTime.ToString(@"hh\:mm")
+                    </option>
+                }
+            </select>
+        </div>
+    </form>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card h-100"><div class="card-body">
+                <h2 class="h6">Total Students</h2>
+                <p class="display-6 mb-0">@Model.TotalStudents</p>
+            </div></div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100"><div class="card-body">
+                <h2 class="h6">Present</h2>
+                <p class="display-6 text-success mb-0">@Model.PresentStudents</p>
+            </div></div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100"><div class="card-body">
+                <h2 class="h6">Absent</h2>
+                <p class="display-6 text-danger mb-0">@Model.AbsentStudents</p>
+            </div></div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100"><div class="card-body">
+                <h2 class="h6">Attendance Rate</h2>
+                <p class="display-6 mb-0">@Model.AttendanceRate.ToString("0.0")%</p>
+            </div></div>
+        </div>
+    </div>
+
+    @if (Model.AttendanceRows.All(row => !row.IsPresent))
+    {
+        <div class="alert alert-info">No attendance records have been recorded for this session yet.</div>
+    }
+
     <div class="table-shell">
         <table class="table">
             <thead>
                 <tr>
-                    <th>Student</th>
+                    <th>Student Name</th>
                     <th>Student Number</th>
-                    <th>Course</th>
-                    <th>Session Date</th>
-                    <th>Time</th>
-                    <th>Marked At</th>
                     <th>Status</th>
+                    <th>Marked At</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -44,11 +93,32 @@ else
                     <tr>
                         <td>@row.StudentName</td>
                         <td>@row.StudentNumber</td>
-                        <td>@row.CourseCode - @row.CourseName</td>
-                        <td>@row.SessionDate.ToString("dd/MM/yyyy")</td>
-                        <td>@row.StartTime.ToString(@"hh\:mm") - @row.EndTime.ToString(@"hh\:mm")</td>
-                        <td>@row.MarkedAt.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td><span class="badge bg-success">@row.Status</span></td>
+                        <td>
+                            @if (row.IsPresent)
+                            {
+                                <span class="badge bg-success">Present</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Absent</span>
+                            }
+                        </td>
+                        <td>@(row.MarkedAt?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
+                        <td>
+                            <form method="post" asp-page-handler="Update">
+                                <input type="hidden" name="sessionId" value="@Model.SelectedSession!.Id" />
+                                <input type="hidden" name="studentId" value="@row.StudentId" />
+                                <input type="hidden" name="present" value="@(!row.IsPresent)" />
+                                @if (row.IsPresent)
+                                {
+                                    <button type="submit" class="btn btn-sm btn-danger">Mark Absent</button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-sm btn-primary">Mark Present</button>
+                                }
+                            </form>
+                        </td>
                     </tr>
                 }
             </tbody>

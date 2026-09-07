@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using UCTAttendanceRegister.Data;
 using UCTAttendanceRegister.Models;
+using UCTAttendanceRegister.Services;
 
 namespace UCTAttendanceRegister.Pages.Student;
 
@@ -12,13 +13,16 @@ public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly Inf3003wCourseService _courseService;
 
     public IndexModel(
         ApplicationDbContext context,
-        UserManager<ApplicationUser> userManager)
+        UserManager<ApplicationUser> userManager,
+        Inf3003wCourseService courseService)
     {
         _context = context;
         _userManager = userManager;
+        _courseService = courseService;
     }
 
     public double OverallAttendancePercentage { get; set; }
@@ -38,15 +42,16 @@ public class IndexModel : PageModel
             return;
         }
 
-        var enrolledCourseIds = await _context.StudentCourses
-            .Where(sc => sc.StudentId == student.Id)
-            .Select(sc => sc.CourseId)
-            .ToListAsync();
+        var fixedCourse = await _courseService.GetAsync();
+        if (fixedCourse == null)
+        {
+            return;
+        }
 
-        var courses = await _context.Courses
-            .Where(c => enrolledCourseIds.Contains(c.Id))
-            .OrderBy(c => c.CourseCode)
-            .ToListAsync();
+        var isEnrolled = await _context.StudentCourses
+            .AnyAsync(sc => sc.StudentId == student.Id && sc.CourseId == fixedCourse.Id);
+
+        var courses = isEnrolled ? new List<Course> { fixedCourse } : new List<Course>();
 
         EnrolledCourses = courses;
 

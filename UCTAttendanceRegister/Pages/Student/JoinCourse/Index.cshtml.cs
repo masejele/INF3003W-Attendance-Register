@@ -1,12 +1,11 @@
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using UCTAttendanceRegister.Data;
 using UCTAttendanceRegister.Models;
+using UCTAttendanceRegister.Services;
 
 namespace UCTAttendanceRegister.Pages.Student.JoinCourse;
 
@@ -15,35 +14,24 @@ public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly Inf3003wCourseService _courseService;
 
     public IndexModel(
         ApplicationDbContext context,
-        UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            Inf3003wCourseService courseService)
     {
         _context = context;
         _userManager = userManager;
+            _courseService = courseService;
     }
-
-    [BindProperty]
-    [Required]
-    [Display(Name = "Available Courses")]
-    public int CourseId { get; set; }
-
-    public List<SelectListItem> AvailableCourses { get; set; } = new();
 
     public async Task OnGetAsync()
     {
-        await LoadAvailableCourses();
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
-        if (!ModelState.IsValid)
-        {
-            await LoadAvailableCourses();
-            return Page();
-        }
-
         var student = await _userManager.GetUserAsync(User);
 
         if (student == null)
@@ -51,13 +39,11 @@ public class IndexModel : PageModel
             return Challenge();
         }
 
-        var course = await _context.Courses
-            .FirstOrDefaultAsync(c => c.Id == CourseId);
+        var course = await _courseService.GetAsync();
 
         if (course == null)
         {
-            TempData["Error"] = "Please select a valid course from the list.";
-            await LoadAvailableCourses();
+            TempData["Error"] = "The INF3003W course could not be found.";
             return Page();
         }
 
@@ -66,8 +52,7 @@ public class IndexModel : PageModel
 
         if (alreadyJoined)
         {
-            TempData["Error"] = "You are already enrolled in this course.";
-            await LoadAvailableCourses();
+            TempData["Error"] = "You are already enrolled in INF3003W.";
             return Page();
         }
 
@@ -85,29 +70,4 @@ public class IndexModel : PageModel
         return RedirectToPage("/Student/Index");
     }
 
-    private async Task LoadAvailableCourses()
-    {
-        var student = await _userManager.GetUserAsync(User);
-
-        if (student == null)
-        {
-            AvailableCourses = new List<SelectListItem>();
-            return;
-        }
-
-        var joinedCourseIds = await _context.StudentCourses
-            .Where(sc => sc.StudentId == student.Id)
-            .Select(sc => sc.CourseId)
-            .ToListAsync();
-
-        AvailableCourses = await _context.Courses
-            .Where(c => !joinedCourseIds.Contains(c.Id))
-            .OrderBy(c => c.CourseCode)
-            .Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.CourseCode + " - " + c.CourseName
-            })
-            .ToListAsync();
-    }
 }

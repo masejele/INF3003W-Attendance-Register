@@ -1,0 +1,104 @@
+@page
+@model UCTAttendanceRegister.Pages.Lecturer.AttendanceImport.IndexModel
+
+@{
+    ViewData["Title"] = "Import Attendance";
+}
+
+<div class="page-intro">
+    <span class="eyebrow">Historical data</span>
+    <h1 class="page-title lecturer-title">Import Attendance</h1>
+    <p>Import historical attendance for the fixed INF3003W course.</p>
+</div>
+
+<div class="page-actions">
+    <a asp-page="/Lecturer/Index" class="btn btn-primary">Back to Dashboard</a>
+</div>
+
+@if (Model.ImportResult != null && Model.ImportResult.Succeeded)
+{
+    <div class="alert alert-success" role="alert">
+        <strong>CSV file imported successfully.</strong>
+        Scroll down to view the imported information and summary.
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-7">
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label class="form-label">Course</label>
+                <p class="form-control-plaintext import-course-code">INF3003W</p>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="StartTime" class="form-label"></label>
+                <input asp-for="StartTime" type="time" class="form-control" />
+                <span asp-validation-for="StartTime" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="EndTime" class="form-label"></label>
+                <input asp-for="EndTime" type="time" class="form-control" />
+                <span asp-validation-for="EndTime" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="CsvFile" class="form-label"></label>
+                <input asp-for="CsvFile" type="file" accept=".csv,text/csv" class="form-control" />
+                <span asp-validation-for="CsvFile" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Import Attendance</button>
+            <a asp-page="/Lecturer/AttendanceSessions/Index" class="btn btn-secondary">View Sessions</a>
+        </form>
+    </div>
+</div>
+
+<div class="glow-panel mt-4">
+    <h2 class="h4">Required CSV format</h2>
+    <p class="mb-2">Use a semicolon-delimited CSV file. The first column must be Student Name, the second must be Student No, and every remaining column must be a date in yyyy/MM/dd format.</p>
+    <p class="mb-0">Each attendance value must be 0 or 1. A value of 1 imports attendance; a value of 0 does not create an attendance record.</p>
+</div>
+
+@if (Model.ImportResult != null && Model.ImportResult.Succeeded)
+{
+    <div class="glow-panel mt-4">
+        <h2 class="h4">Import completed successfully.</h2>
+        <dl class="row mb-0">
+            <dt class="col-sm-7">Students processed</dt>
+            <dd class="col-sm-5">@Model.ImportResult.StudentsProcessed</dd>
+            <dt class="col-sm-7">Attendance records imported</dt>
+            <dd class="col-sm-5">@Model.ImportResult.AttendanceRecordsImported</dd>
+            <dt class="col-sm-7">Duplicate records skipped</dt>
+            <dd class="col-sm-5">@Model.ImportResult.DuplicateAttendanceRecordsSkipped</dd>
+            <dt class="col-sm-7">Students not found</dt>
+            <dd class="col-sm-5">@Model.ImportResult.StudentsNotFound.Count</dd>
+            <dt class="col-sm-7">Invalid attendance values</dt>
+            <dd class="col-sm-5">@Model.ImportResult.InvalidAttendanceValues</dd>
+            <dt class="col-sm-7">Invalid dates</dt>
+            <dd class="col-sm-5">@Model.ImportResult.InvalidDates</dd>
+            <dt class="col-sm-7">Sessions created</dt>
+            <dd class="col-sm-5">@Model.ImportResult.SessionsCreated</dd>
+            <dt class="col-sm-7">Other skipped records</dt>
+            <dd class="col-sm-5">@Model.ImportResult.OtherSkippedRecords</dd>
+        </dl>
+
+        @if (Model.ImportResult.StudentsNotFound.Count > 0)
+        {
+            <h3 class="h5 mt-4">Students not found</h3>
+            <ul>
+                @foreach (var studentNumber in Model.ImportResult.StudentsNotFound)
+                {
+                    <li>@studentNumber</li>
+                }
+            </ul>
+        }
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

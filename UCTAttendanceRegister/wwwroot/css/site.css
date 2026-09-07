@@ -217,6 +217,12 @@ label,
     color: #f8fbff;
 }
 
+.card h2,
+.card h6,
+.card .display-6 {
+    color: #f8fbff;
+}
+
 .card-text {
     color: #e6edf7;
     line-height: 1.7;
@@ -356,6 +362,10 @@ label,
 .alert-success {
     border-color: rgba(52, 211, 153, 0.4);
     background: rgba(16, 185, 129, 0.08);
+}
+
+.import-course-code {
+    color: #fff;
 }
 
 .alert-danger {

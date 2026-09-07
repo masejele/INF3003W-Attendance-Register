@@ -18,24 +18,8 @@
                  class="text-danger"></div>
 
             <div class="mb-3">
-                <label asp-for="AttendanceSession.CourseId"
-                       class="form-label">
-                    Course
-                </label>
-
-                <select asp-for="AttendanceSession.CourseId"
-                        asp-items="Model.CourseList"
-                        class="form-select">
-
-                    <option value="">
-                        -- Select Course --
-                    </option>
-
-                </select>
-
-                <span asp-validation-for="AttendanceSession.CourseId"
-                      class="text-danger">
-                </span>
+                <label class="form-label">Course</label>
+                <p class="form-control-plaintext">INF3003W</p>
             </div>
 
             <div class="mb-3">
